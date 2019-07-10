@@ -1,11 +1,12 @@
 // ==UserScript==
 // @name        1Channel Streamline
 // @author      Tyler Studanski
-// @copyright   2014
+// @copyright   2019
 // @namespace   https://github.com/Gibado
 // @description Brings you to the video by clicking the right buttons.  Currently supports 15 sites
-// @version     2019.7.10.0
-// @downloadURL http://gibado.ddns.net/UserScripts/1ChannelStreamline.user.js
+// @version     2019.7.10.1
+// @downloadURL https://github.com/Gibado/UserScriptRepository/raw/master/scripts/1ChannelStreamline.user.js
+// @udpateURL   https://github.com/Gibado/UserScriptRepository/raw/master/scripts/1ChannelStreamline.user.js
 // @grant       none
 
 // @match		http://bestreams.net/*
@@ -25,6 +26,7 @@
 // ==/UserScript==
 
 // ==Version History==
+// 2019.7.10.1 - Updated download and update URLs and copyright date
 // 2019.7.10.0 - Moved to GitHub.com
 // v2.9 - Refactored object framework to not overwrite existing
 //			object definition.

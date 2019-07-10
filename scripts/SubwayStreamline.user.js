@@ -1,19 +1,20 @@
 // ==UserScript==
 // @name		Subway Streamline
 // @namespace	https://github.com/Gibado
-// @version		2019.7.10.0
+// @version		2019.7.10.1
 // @description	Streamlines through the free cookie survey
 // @match		https://www.tellsubway.com/ContentManager/Controller.aspx?page=Home/Home
 // @match		https://www.tellsubway.com/ContentManager/Controller.aspx?page=CustomerExperience/SurveyNew*
-// @match		https://gibado.ddns.net/scripts/utilities/CookieUtils.js
 // @require		http://gibado.ddns.net/scripts/utilities/CookieUtils.js
-// @downloadURL http://gibado.ddns.net/UserScripts/Personal/SubwayStreamline.user.js
-// @copyright	2015
+// @downloadURL https://github.com/Gibado/UserScriptRepository/raw/master/scripts/SubwayStreamline.user.js
+// @updateURL   https://github.com/Gibado/UserScriptRepository/raw/master/scripts/SubwayStreamline.user.js
+// @copyright	2019
 // @author		Tyler Studanski
 // @grant		none
 // ==/UserScript==
 
 // ==Version History==
+// 2019.7.10.1 - Updated download and update URLs and copyright date
 // 2019.7.10.0 - Moved to GitHub.com
 // v2.9 - Fixed Bug #7.
 //		- Changed arrays to functions

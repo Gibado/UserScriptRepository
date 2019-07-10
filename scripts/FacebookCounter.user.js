@@ -4,13 +4,15 @@
 // @copyright   2019
 // @namespace   https://github.com/Gibado
 // @description Adds a button to list who commented on the posts on the page and how many times they did so.
-// @version     2019.7.10.0
-// @downloadURL http://gibado.ddns.net/UserScripts/Kristi/FacebookCounter.user.js
+// @version     2019.7.10.1
+// @downloadURL https://github.com/Gibado/UserScriptRepository/raw/master/scripts/FacebookCounter.user.js
+// @updateURL   https://github.com/Gibado/UserScriptRepository/raw/master/scripts/FacebookCounter.user.js
 // @grant       none
 // @match		https://www.facebook.com/events/*
 // ==/UserScript==
 
 // ==Version History==
+// 2019.7.10.1 - Updated download and update URLs
 // 2019.7.10.0 - Moved to GitHub.com
 // v1.0 - First working version.
 // v2.0 - Added UI for easier use
