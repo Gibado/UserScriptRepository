@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         cookie-cleanup.user.js
 // @namespace    https://github.com/Gibado
-// @version      2019.7.10.1
+// @version      2019.7.10.2
 // @description  Adds a function to the site delete all ""gsScrollPos" cookies from that site.  This is is an issue with some Google sites.
 // @author       Tyler Studanski
 // @match        https://www.google.com/*
