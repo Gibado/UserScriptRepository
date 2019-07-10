@@ -6,11 +6,12 @@
 // @author       Tyler Studanski
 // @match        https://www.google.com/*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/Gibado/scripts/master/cookie-cleanup.user.js
-// @downloadURL  https://raw.githubusercontent.com/Gibado/scripts/master/cookie-cleanup.user.js
+// @updateURL    https://github.com/Gibado/UserScriptRepository/raw/master/scripts/cookie-cleanup.user.js
+// @downloadURL  https://github.com/Gibado/UserScriptRepository/raw/master/scripts/cookie-cleanup.user.js
 // ==/UserScript==
 
 // ==Version History==
+// 2019.7.10.2 - Fix update URL
 // 2019.7.10.1 - Simplify code and added comments
 // 2019.7.10 - Initial version
 // ==/Version History==
