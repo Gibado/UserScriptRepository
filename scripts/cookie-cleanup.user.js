@@ -1,16 +1,18 @@
 // ==UserScript==
 // @name         cookie-cleanup.user.js
 // @namespace    https://github.com/Gibado
-// @version      2019.7.10.2
+// @version      2019.7.10.3
 // @description  Adds a function to the site delete all ""gsScrollPos" cookies from that site.  This is is an issue with some Google sites.
 // @author       Tyler Studanski
 // @match        https://www.google.com/*
+// @match        https://www.youtube.com/*
 // @grant        none
 // @updateURL    https://github.com/Gibado/UserScriptRepository/raw/master/scripts/cookie-cleanup.user.js
 // @downloadURL  https://github.com/Gibado/UserScriptRepository/raw/master/scripts/cookie-cleanup.user.js
 // ==/UserScript==
 
 // ==Version History==
+// 2019.7.10.3 - Added YouTube to matching site list
 // 2019.7.10.2 - Fix update URL
 // 2019.7.10.1 - Simplify code and added comments
 // 2019.7.10 - Initial version
