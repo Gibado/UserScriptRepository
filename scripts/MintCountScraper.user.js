@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name		Mint Count Scraper
 // @namespace	https://github.com/Gibado
-// @version		2019.9.3.1
+// @version		2019.9.3.2
 // @description	Collects account amounts for easy exporting
 // @match		https://mint.intuit.com/overview.event
-// @require		https://raw.githubusercontent.com/Gibado/UserScriptRepository/master/resources/utils/commonUtils.js
+// @require		https://raw.githubusercontent.com/Gibado/UserScriptRepository/master/common/ClipboardUtils.js
 // @downloadURL https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintCountScraper.user.js
 // @updateURL   https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintCountScraper.user.js
 // @copyright	2019
@@ -13,6 +13,7 @@
 // ==/UserScript==
 
 // ==Version History==
+// 2019.9.3.2 - Added timeout for initial work
 // 2019.9.3.1 - Moved copy to clipboard to utility js file.  Changed code layout
 // 2019.9.3.0 - Initial check-in
 // ==/Version History==
@@ -116,7 +117,7 @@
         }
     };
 
-// $(document).ready(function(){
-    document.gibado.Mint.triggerRetryWork();
-// });
+    setTimeout(function() {
+        document.gibado.Mint.triggerRetryWork();
+    }, 2000);
 })();
