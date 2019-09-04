@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name		Mint Offer Remover
 // @namespace	https://github.com/Gibado
-// @version		2019.9.4.1
+// @version		2019.9.4.2
 // @description	Removes the offers on the page
 // @match		https://mint.intuit.com/overview.event
 // @require		https://raw.githubusercontent.com/Gibado/UserScriptRepository/master/common/Utils.js
@@ -14,6 +14,7 @@
 // ==/UserScript==
 
 // ==Version History==
+// 2019.9.4.2 - Changed conditional function
 // 2019.9.4.1 - Added Utils and common Mint functions
 // 2019.9.4.0 - Initial check-in
 // ==/Version History==
@@ -31,6 +32,11 @@
         document.gibado.Mint = {};
     }
 
+    document.gibado.Mint.offersExist = function() {
+        return document.getElementsByClassName('offerSection').length > 0 &&
+            document.getElementsByClassName('CardView adviceWidget').length > 0;
+    };
+
     document.gibado.Mint.clearOffers = function() {
         var offer = document.getElementsByClassName('offerSection')[0];
         offer.hidden = true;
@@ -38,5 +44,5 @@
         offer.hidden = true;
     };
 
-    Utils.conditionalRun(2000, document.gibado.Mint.isDoneLoading, document.gibado.Mint.clearOffers);
+    Utils.conditionalRun(2000, document.gibado.Mint.offersExist, document.gibado.Mint.clearOffers);
 })();
