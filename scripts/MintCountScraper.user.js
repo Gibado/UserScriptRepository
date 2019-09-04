@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name		Mint Count Scraper
 // @namespace	https://github.com/Gibado
-// @version		2019.9.4.1
+// @version		2019.9.4.2
 // @description	Collects account amounts for easy exporting
 // @match		https://mint.intuit.com/overview.event
 // @require		https://raw.githubusercontent.com/Gibado/UserScriptRepository/master/common/ClipboardUtils.js
 // @require		https://raw.githubusercontent.com/Gibado/UserScriptRepository/master/common/Utils.js
-// @require		https://raw.githubusercontent.com/Gibado/UserScriptRepository/master/common/MintCommon.js
 // @downloadURL https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintCountScraper.user.js
 // @updateURL   https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintCountScraper.user.js
 // @copyright	2019
@@ -15,6 +14,7 @@
 // ==/UserScript==
 
 // ==Version History==
+// 2019.9.4.2 - Changed conditional function
 // 2019.9.4.1 - Removed 'this' references
 // 2019.9.4.0 - Moved functions to common files.  Changed to a modular object build.  Updated documentation
 // 2019.9.3.2 - Added timeout for initial work
@@ -45,6 +45,14 @@
      * @type {string}
      */
     document.gibado.Mint.report = '';
+
+    /**
+     * Checks if account lists have been loaded
+     * @return {boolean} Returns true if an account list is present on the page
+     */
+    document.gibado.Mint.areAccountLists = function() {
+        return document.getElementsByClassName('accounts-list').length > 0;
+    };
 
     /**
      * Grabs checking and savings account totals and stores them in the map
@@ -117,5 +125,5 @@
     };
 
 
-    Utils.conditionalRun(2000, document.gibado.Mint.isDoneLoading, document.gibado.Mint.doWork);
+    Utils.conditionalRun(2000, document.gibado.Mint.areAccountLists, document.gibado.Mint.doWork);
 })();
