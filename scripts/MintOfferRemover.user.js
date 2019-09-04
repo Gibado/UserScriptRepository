@@ -1,9 +1,11 @@
 // ==UserScript==
 // @name		Mint Offer Remover
 // @namespace	https://github.com/Gibado
-// @version		2019.9.4.0
+// @version		2019.9.4.1
 // @description	Removes the offers on the page
 // @match		https://mint.intuit.com/overview.event
+// @require		https://raw.githubusercontent.com/Gibado/UserScriptRepository/master/common/Utils.js
+// @require		https://raw.githubusercontent.com/Gibado/UserScriptRepository/master/common/MintCommon.js
 // @downloadURL https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintOfferRemover.user.js
 // @updateURL   https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintOfferRemover.user.js
 // @copyright	2019
@@ -12,6 +14,7 @@
 // ==/UserScript==
 
 // ==Version History==
+// 2019.9.4.1 - Added Utils and common Mint functions
 // 2019.9.4.0 - Initial check-in
 // ==/Version History==
 
@@ -35,7 +38,5 @@
         offer.hidden = true;
     };
 
-    setTimeout(function() {
-        document.gibado.Mint.clearOffers();
-    }, 2000);
+    Utils.conditionalRun(2000, document.gibado.Mint.isDoneLoading, document.gibado.Mint.clearOffers);
 })();
