@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name		Mint Offer Remover
 // @namespace	https://github.com/Gibado
-// @version		2019.9.4.5
+// @version		2019.9.4.6
 // @description	Removes the offers on the page
-// @match		https://mint.intuit.com/overview.event
+// @match		https://mint.intuit.com/*
 // @require		https://raw.githubusercontent.com/Gibado/UserScriptRepository/master/common/Utils.js
 // @downloadURL https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintOfferRemover.user.js
 // @updateURL   https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintOfferRemover.user.js
@@ -13,6 +13,7 @@
 // ==/UserScript==
 
 // ==Version History==
+// 2019.9.4.6 - Made the match URL more inclusive
 // 2019.9.4.5 - Will also remove offers from other tabs
 // 2019.9.4.4 - Split out offers and advice
 // 2019.9.4.3 - Added documentation
