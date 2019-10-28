@@ -10,8 +10,8 @@ if (Utils === undefined) {
  */
 Utils.conditionalRun = function(checkTime, condition, callback) {
     setTimeout(function() {
-        if (this[condition]()) {
-            this[callback]();
+        if (condition()) {
+            callback();
         } else {
             Utils.conditionalRun(checkTime, condition, callback);
         }
