@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         xFinity data limit addition
 // @namespace    https://github.com/Gibado
-// @version      2021.10.5.0
+// @version      2021.10.20.0
 // @description  Add extra data analysis to the page
 // @author       Tyler Studanski
 // @match        https://customer.xfinity.com/
@@ -97,7 +97,7 @@ var gibadoModel = function() {
 	self.validateSite = function() {
 		console.log('Checking site URL');
 		// check URL
-		var available = document.location.href.indexOf('#/services/internet#usage') != -1;
+		var available = document.location.href.indexOf('#/services/internet') != -1;
 		// check elements
 		if (available)
 		{
