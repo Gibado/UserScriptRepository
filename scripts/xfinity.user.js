@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         xFinity data limit addition
 // @namespace    https://github.com/Gibado
-// @version      2022.01.27.0
+// @version      2022.01.27.1
 // @description  Add extra data analysis to the page
 // @author       Tyler Studanski
 // @match        https://customer.xfinity.com/*
@@ -54,7 +54,7 @@ var gibadoModel = function() {
 		var availableData = parseInt(dataText.replace('GB',''));
 
 		// Calculate data used
-		self.dataUsed = self.dataCap - availableData;
+		self.dataUsed = self.dataLimit - availableData;
 		
 		// Get day of the month
 		var currentDate = new Date();
