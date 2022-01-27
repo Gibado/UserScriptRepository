@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         xFinity data limit addition
 // @namespace    https://github.com/Gibado
-// @version      2021.10.20.1
+// @version      2022.01.27.0
 // @description  Add extra data analysis to the page
 // @author       Tyler Studanski
-// @match        https://customer.xfinity.com/
+// @match        https://customer.xfinity.com/*
 // @icon         https://www.google.com/s2/favicons?domain=xfinity.com
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js
 // @downloadURL  https://github.com/Gibado/UserScriptRepository/raw/master/scripts/xfinity.user.js
@@ -25,8 +25,14 @@ var gibadoModel = function() {
 	// How much data allowed until today
 	self.expectedDataUse = -1;
 	
+	// How much data to leave in reserve 
+	self.dataSafetyMargin = 200;
+	
 	// Data limit for the month
-	self.dataCap = 1229;
+	self.dataLimit = 1229;
+	
+	// The amount of data you're targeting to use in the month
+	self.dataCap = self.dataLimit - self.dataSafetyMargin;
 	
 	// Month in JavaScript is 0-indexed (January is 0, February is 1, etc), 
 	// but by using 0 as the day it will give us the last day of the prior
