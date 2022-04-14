@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         EarnApp Daily Totals
 // @namespace    https://github.com/Gibado
-// @version      2022.04.12.4
+// @version      2022.4.14.0
 // @description  Adds daily earned totals under the data graph
 // @author       Tyler Studanski
-// @match        https://earnapp.com/dashboard
+// @match        https://earnapp.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=earnapp.com
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js
 // @downloadURL  https://github.com/Gibado/UserScriptRepository/raw/master/scripts/earnappTotals.user.js
@@ -18,17 +18,28 @@ document.myEarnApp = function() {
 	self.usageData = undefined;
 	self.dailyMap = {};
 
-	self.grabUsage = function() {
-		// Reset data
+	// Main function to run
+	self.run = function() {
+		self.reset();
+		self.grabUsage();
+	};
+
+	// Resets the data properties
+	self.reset = function() {
 		self.usageData = undefined;
 		self.dailyMap = {};
+	};
 
+	// Fetches data uses per machine and adds them to the usageData property
+	self.grabUsage = function() {
 		$.ajax({
 			'url' : 'https://earnapp.com/dashboard/api/usage?appid=earnapp_dashboard&version=1.292.111&step=daily',
 			'type' : 'GET',
 			'success' : function(data) {
 				self.usageData = data;
 				self.processUsage(self.usageData);
+				self.updateCounts(self.dailyMap);
+				self.addToPage(self.dailyMap);
 			},
 			'error' : function(request,error)
 			{
@@ -37,16 +48,13 @@ document.myEarnApp = function() {
 		});
 	};
 
-
-
+	// Totals byte usage for each machine and stores this in the dailyMap property
 	self.processUsage = function(usageData) {
 		if (usageData === undefined) {
 			return;
 		}
 		for (const machine of usageData) {
-			//console.log(machine.name + ' used ' + machine.data);
 			for (const date in machine.data) {
-				console.log(date + ' - ' + machine.data[date]);
 				if (self.dailyMap[date] === undefined) {
 					self.dailyMap[date] = {
 						bytes: 0,
@@ -56,9 +64,9 @@ document.myEarnApp = function() {
 				self.dailyMap[date].bytes += machine.data[date];
 			}
 		}
-		self.updateCounts(self.dailyMap);
     };
 
+	// Calculates KB, MB, and GB use for each machine and their individual earnings
 	self.updateCounts = function(dateMap) {
 		for (const dateKey in dateMap) {
 			var date = dateMap[dateKey];
@@ -67,9 +75,9 @@ document.myEarnApp = function() {
 			date.gBytes = date.mBytes / 1024;
 			date.earnings = self.formatter.format(date.gBytes / 2);
 		}
-		self.addToPage(dateMap);
 	};
 
+	// Adds/updates display with current data
 	self.addToPage = function(results) {
 
 		var display = self.getDisplay();
@@ -79,10 +87,9 @@ document.myEarnApp = function() {
 		}
 
 		display.appendChild(self.buildTable(results));
-
-		self.printResults();
     };
 
+	// Returns existing div to display information or builds a new one
 	self.getDisplay = function() {
 		var display = document.getElementById('earningDisplay');
 		if (display !== null) {
@@ -98,6 +105,7 @@ document.myEarnApp = function() {
 		return display;
 	};
 
+	// Creates table to display statistics to user
 	self.buildTable = function(results) {
 		var table = document.createElement('table');
 		// Add headers
@@ -107,7 +115,6 @@ document.myEarnApp = function() {
 		var dataRow = document.createElement('tr');
 		table.appendChild(dataRow);
 
-		//for (const date in results) {
 		Object.keys(results).reverse().forEach(function(date) {
 
 			var header = document.createElement('th');
@@ -118,11 +125,11 @@ document.myEarnApp = function() {
 			data.textContent = results[date].earnings;
 			dataRow.appendChild(data);
 		});
-		//}
 
 		return table;
 	};
 
+	// Debug function
 	self.printResults = function() {
 		console.log(self.usageData);
 		console.log(self.dailyMap);
@@ -135,12 +142,12 @@ document.myEarnApp = function() {
             if (!self.validateSite()) {
 				self.delayedRun(intervalTime);
 			} else {
-				self.grabUsage();
+				self.run();
 			}
 		}, intervalTime);
 	};
 
-    // Holds off on further processing until the page is ready
+    // Returns true if the site has the proper information available
     self.validateSite = function() {
         console.log('Checking for valid site...');
         return document.getElementsByClassName('ea_usage_chart').length > 0;
@@ -160,7 +167,8 @@ document.myEarnApp = function() {
 	return self;
 };
 
+// Delay the run to give the site a chance to load
 setTimeout(function() {
-	var myEarnApp = document.myEarnApp();
-	myEarnApp.delayedRun(1000);
+	earnAppModel = document.myEarnApp();
+	earnAppModel.delayedRun(1000);
 }, 10);
