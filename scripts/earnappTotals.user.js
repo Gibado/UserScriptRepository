@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EarnApp Daily Totals
 // @namespace    https://github.com/Gibado
-// @version      2022.4.14.0
+// @version      2022.4.19.0
 // @description  Adds daily earned totals under the data graph
 // @author       Tyler Studanski
 // @match        https://earnapp.com/*
@@ -17,6 +17,7 @@ document.myEarnApp = function() {
 	var self = this;
 	self.usageData = undefined;
 	self.dailyMap = {};
+	self.deviceMap = {};
 
 	// Main function to run
 	self.run = function() {
@@ -28,6 +29,7 @@ document.myEarnApp = function() {
 	self.reset = function() {
 		self.usageData = undefined;
 		self.dailyMap = {};
+		self.deviceMap = {};
 	};
 
 	// Fetches data uses per machine and adds them to the usageData property
@@ -38,8 +40,8 @@ document.myEarnApp = function() {
 			'success' : function(data) {
 				self.usageData = data;
 				self.processUsage(self.usageData);
-				self.updateCounts(self.dailyMap);
-				self.addToPage(self.dailyMap);
+				self.updateCounts(self.dailyMap, self.deviceMap);
+				self.addToPage(self.dailyMap, self.deviceMap);
 			},
 			'error' : function(request,error)
 			{
@@ -48,26 +50,45 @@ document.myEarnApp = function() {
 		});
 	};
 
-	// Totals byte usage for each machine and stores this in the dailyMap property
+	// Adds data to deviceMap property and Totals byte usage for each machine in the dailyMap property
 	self.processUsage = function(usageData) {
 		if (usageData === undefined) {
 			return;
 		}
+		var total = undefined;
 		for (const machine of usageData) {
+			self.deviceMap[machine.name] = {
+				data: JSON.parse(JSON.stringify(machine.data))
+			};
+
+			// Calculate daily totals
+			if (total === undefined) {
+				total = JSON.parse(JSON.stringify(self.deviceMap[machine.name]));
+			} else {
+				for (const date in machine.data) {
+					total.data[date] += machine.data[date];
+				}
+			}
+
 			for (const date in machine.data) {
 				if (self.dailyMap[date] === undefined) {
 					self.dailyMap[date] = {
 						bytes: 0,
 					};
 				}
-
-				self.dailyMap[date].bytes += machine.data[date];
 			}
 		}
+
+		// Calculate daily averages
+		self.deviceMap.Average = JSON.parse(JSON.stringify(total));
+		for (const date in self.deviceMap.Average.data) {
+			self.deviceMap.Average.data[date] /= 7;
+		}
+		self.deviceMap.Total = total;
     };
 
 	// Calculates KB, MB, and GB use for each machine and their individual earnings
-	self.updateCounts = function(dateMap) {
+	self.updateCounts = function(dateMap, deviceMap) {
 		for (const dateKey in dateMap) {
 			var date = dateMap[dateKey];
 			date.kBytes = date.bytes / 1024;
@@ -75,10 +96,25 @@ document.myEarnApp = function() {
 			date.gBytes = date.mBytes / 1024;
 			date.earnings = self.formatter.format(date.gBytes / 2);
 		}
+
+		for (const device in deviceMap) {
+			// Convert all bytes to GB
+			deviceMap[device].totalGBytes = 0;
+			for (const date in deviceMap[device].data) {
+				deviceMap[device].data[date] /= Math.pow(1024,3); // kilo-, mega-, and giga-byte
+				deviceMap[device].totalGBytes += deviceMap[device].data[date];
+			}
+			// Add device average
+			deviceMap[device].avgGBytes = deviceMap[device].totalGBytes / 7;
+
+			// Add Earnings
+			deviceMap[device].totalEarnings = self.formatter.format(deviceMap[device].totalGBytes / 2);
+			deviceMap[device].avgEarnings = self.formatter.format(deviceMap[device].avgGBytes / 2);
+		}
 	};
 
 	// Adds/updates display with current data
-	self.addToPage = function(results) {
+	self.addToPage = function(results, deviceMap) {
 
 		var display = self.getDisplay();
 
@@ -86,7 +122,7 @@ document.myEarnApp = function() {
 			display.childNodes[0].remove();
 		}
 
-		display.appendChild(self.buildTable(results));
+		display.appendChild(self.buildTable(results, deviceMap));
     };
 
 	// Returns existing div to display information or builds a new one
@@ -106,33 +142,61 @@ document.myEarnApp = function() {
 	};
 
 	// Creates table to display statistics to user
-	self.buildTable = function(results) {
+	self.buildTable = function(results, deviceMap) {
 		var table = document.createElement('table');
+		table.border = 1;
 		// Add headers
 		var headers = document.createElement('tr');
 		table.appendChild(headers);
-		// Add data
-		var dataRow = document.createElement('tr');
-		table.appendChild(dataRow);
 
-		Object.keys(results).reverse().forEach(function(date) {
+		var headerData = ['Device'];
+		headerData = headerData.concat(Object.keys(deviceMap.Total.data).reverse());
+		headerData = headerData.concat('Avg GB', 'Total GB', 'Avg $', 'Total $');
 
-			var header = document.createElement('th');
-			header.textContent = date;
-			headers.appendChild(header);
+		self.createRow('th', headers, headerData);
 
-			var data = document.createElement('td');
-			data.textContent = results[date].earnings;
-			dataRow.appendChild(data);
+		// Object.keys(results).reverse().forEach(function(date) {
+
+			// var header = document.createElement('th');
+			// header.textContent = date;
+			// headers.appendChild(header);
+
+			// var data = document.createElement('td');
+			// data.textContent = results[date].earnings;
+			// deviceRow.appendChild(data);
+		// });
+
+		Object.keys(deviceMap).forEach(function(device) {
+			// Add data
+			var deviceRow = document.createElement('tr');
+			table.appendChild(deviceRow);
+
+			var dataRow = [device];
+			Object.values(deviceMap[device].data).reverse().forEach(function(total) {
+				dataRow = dataRow.concat(total.toFixed(2));
+			});
+			dataRow = dataRow.concat(deviceMap[device].avgGBytes.toFixed(2), deviceMap[device].totalGBytes.toFixed(2), deviceMap[device].avgEarnings, deviceMap[device].totalEarnings);
+
+			self.createRow('td', deviceRow, dataRow);
 		});
 
 		return table;
+	};
+
+	// Adds the given data to a table row with the given type (th/td)
+	self.createRow = function(elementType, parentElement, dataArray) {
+		Object.values(dataArray).forEach(function(data) {
+			var column = document.createElement(elementType);
+			column.textContent = data;
+			parentElement.appendChild(column);
+		});
 	};
 
 	// Debug function
 	self.printResults = function() {
 		console.log(self.usageData);
 		console.log(self.dailyMap);
+		console.log(self.deviceMap);
 	};
 
     // Checks if this is the correct page and waits the intervalTime before checking again
