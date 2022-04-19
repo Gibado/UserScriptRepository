@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EarnApp Daily Totals
 // @namespace    https://github.com/Gibado
-// @version      2022.4.19.0
+// @version      2022.4.19.1
 // @description  Adds daily earned totals under the data graph
 // @author       Tyler Studanski
 // @match        https://earnapp.com/*
@@ -16,7 +16,6 @@
 document.myEarnApp = function() {
 	var self = this;
 	self.usageData = undefined;
-	self.dailyMap = {};
 	self.deviceMap = {};
 
 	// Main function to run
@@ -28,7 +27,6 @@ document.myEarnApp = function() {
 	// Resets the data properties
 	self.reset = function() {
 		self.usageData = undefined;
-		self.dailyMap = {};
 		self.deviceMap = {};
 	};
 
@@ -40,8 +38,8 @@ document.myEarnApp = function() {
 			'success' : function(data) {
 				self.usageData = data;
 				self.processUsage(self.usageData);
-				self.updateCounts(self.dailyMap, self.deviceMap);
-				self.addToPage(self.dailyMap, self.deviceMap);
+				self.updateCounts(self.deviceMap);
+				self.addToPage(self.deviceMap);
 			},
 			'error' : function(request,error)
 			{
@@ -50,7 +48,8 @@ document.myEarnApp = function() {
 		});
 	};
 
-	// Adds data to deviceMap property and Totals byte usage for each machine in the dailyMap property
+	// Adds data to deviceMap property and finds average and total byte usage for each date
+	// The daily averages and totals are treated as devices to calculate averages and totals across the week
 	self.processUsage = function(usageData) {
 		if (usageData === undefined) {
 			return;
@@ -69,14 +68,6 @@ document.myEarnApp = function() {
 					total.data[date] += machine.data[date];
 				}
 			}
-
-			for (const date in machine.data) {
-				if (self.dailyMap[date] === undefined) {
-					self.dailyMap[date] = {
-						bytes: 0,
-					};
-				}
-			}
 		}
 
 		// Calculate daily averages
@@ -88,15 +79,7 @@ document.myEarnApp = function() {
     };
 
 	// Calculates KB, MB, and GB use for each machine and their individual earnings
-	self.updateCounts = function(dateMap, deviceMap) {
-		for (const dateKey in dateMap) {
-			var date = dateMap[dateKey];
-			date.kBytes = date.bytes / 1024;
-			date.mBytes = date.kBytes / 1024;
-			date.gBytes = date.mBytes / 1024;
-			date.earnings = self.formatter.format(date.gBytes / 2);
-		}
-
+	self.updateCounts = function(deviceMap) {
 		for (const device in deviceMap) {
 			// Convert all bytes to GB
 			deviceMap[device].totalGBytes = 0;
@@ -114,7 +97,7 @@ document.myEarnApp = function() {
 	};
 
 	// Adds/updates display with current data
-	self.addToPage = function(results, deviceMap) {
+	self.addToPage = function(deviceMap) {
 
 		var display = self.getDisplay();
 
@@ -122,7 +105,7 @@ document.myEarnApp = function() {
 			display.childNodes[0].remove();
 		}
 
-		display.appendChild(self.buildTable(results, deviceMap));
+		display.appendChild(self.buildTable(deviceMap));
     };
 
 	// Returns existing div to display information or builds a new one
@@ -142,7 +125,7 @@ document.myEarnApp = function() {
 	};
 
 	// Creates table to display statistics to user
-	self.buildTable = function(results, deviceMap) {
+	self.buildTable = function(deviceMap) {
 		var table = document.createElement('table');
 		table.border = 1;
 		// Add headers
@@ -154,17 +137,6 @@ document.myEarnApp = function() {
 		headerData = headerData.concat('Avg GB', 'Total GB', 'Avg $', 'Total $');
 
 		self.createRow('th', headers, headerData);
-
-		// Object.keys(results).reverse().forEach(function(date) {
-
-			// var header = document.createElement('th');
-			// header.textContent = date;
-			// headers.appendChild(header);
-
-			// var data = document.createElement('td');
-			// data.textContent = results[date].earnings;
-			// deviceRow.appendChild(data);
-		// });
 
 		Object.keys(deviceMap).forEach(function(device) {
 			// Add data
@@ -195,7 +167,6 @@ document.myEarnApp = function() {
 	// Debug function
 	self.printResults = function() {
 		console.log(self.usageData);
-		console.log(self.dailyMap);
 		console.log(self.deviceMap);
 	};
 
