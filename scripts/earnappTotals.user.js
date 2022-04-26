@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         EarnApp Daily Totals
 // @namespace    https://github.com/Gibado
-// @version      2022.4.19.1
+// @version      2022.4.26.0
 // @description  Adds daily earned totals under the data graph
 // @author       Tyler Studanski
 // @match        https://earnapp.com/*
@@ -73,7 +73,7 @@ document.myEarnApp = function() {
 		// Calculate daily averages
 		self.deviceMap.Average = JSON.parse(JSON.stringify(total));
 		for (const date in self.deviceMap.Average.data) {
-			self.deviceMap.Average.data[date] /= 7;
+			self.deviceMap.Average.data[date] /= usageData.length;
 		}
 		self.deviceMap.Total = total;
     };
