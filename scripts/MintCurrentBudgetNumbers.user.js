@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Mint Current Budget Numbers
 // @namespace    https://github.com/Gibado
-// @version      2022.10.4.0
+// @version      2022.10.4.1
 // @description  Adds another budget summary with the current values rather than expected values
 // @author       Tyler Studanski
 // @match        https://mint.intuit.com/budgets
@@ -21,21 +21,32 @@
 
         self.checkInterval = 100; // milliseconds
 
-        self.addCurrentBudgetTotals = function() {
+        self.updateCurrentBudgetTotals = function() {
             var totals = self.getTotals();
             totals.leftOver = totals.correctIncome-totals.correctSpending
 
             // Display results
-            var copy = document.getElementsByClassName('GFnUV')[0].cloneNode(true);
-            var parent = document.getElementsByClassName('hnoTcK')[0];
-
-            copy.getElementsByClassName('emqdbU')[0].textContent = 'Current budget';
-            copy.getElementsByClassName('kWUvkg')[0].textContent = self.numberToMoney(totals.correctIncome);
-            copy.getElementsByClassName('jwiEqi')[0].textContent = self.numberToMoney(totals.correctSpending);
-            copy.getElementsByClassName('jpsRWg')[0].textContent = self.numberToMoney(totals.leftOver);
-
-            parent.append(copy);
+            self.getDisplayElement();
+            document.getElementById('income').textContent = self.numberToMoney(totals.correctIncome);
+            document.getElementById('expense').textContent = self.numberToMoney(totals.correctSpending);
+            document.getElementById('leftOver').textContent = self.numberToMoney(totals.leftOver);
         }
+
+        self.getDisplayElement = function() {
+            var display = document.getElementById('currentBudgetSummary');
+            if (display === null) {
+                // Need to create display
+                display = document.getElementsByClassName('GFnUV')[0].cloneNode(true);
+                var parent = document.getElementsByClassName('hnoTcK')[0];
+                parent.append(display);
+                display.id = 'currentBudgetSummary';
+                display.children[0].getElementsByTagName('span')[0].textContent = 'Current budget';
+                display.children[1].getElementsByTagName('div')[1].id = 'income';
+                display.children[2].getElementsByTagName('div')[1].id = 'expense';
+                display.children[3].getElementsByTagName('div')[1].id = 'leftOver';
+            }
+            return display;
+        };
 
         self.getTotals = function() {
             // Find totals
@@ -95,7 +106,7 @@
             // Verify all elements are available
             if (self.isReady()) {
                 // If ready then display info
-                self.addCurrentBudgetTotals();
+                self.run();
             } else {
                 // If not then trigger this check again
                 setTimeout(self.loadWhenReady, self.checkInterval);
@@ -105,6 +116,14 @@
         self.isReady = function() {
             console.log('Checking if elements are available.');
             return document.getElementsByClassName('ghkQbW').length > 0 && document.getElementsByClassName('gqWsLq').length > 0;
+        };
+
+        // Actions to execute when the page is ready
+        self.run = function() {
+            document.getElementsByClassName('ehuaet')[0].onclick = function() {
+                setTimeout(self.updateCurrentBudgetTotals, 300);
+            };
+            self.updateCurrentBudgetTotals();
         };
 
         return self;
