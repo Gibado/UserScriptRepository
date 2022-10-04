@@ -43,7 +43,7 @@
                 display.children[0].getElementsByTagName('span')[0].textContent = 'Current budget';
                 display.children[1].getElementsByTagName('div')[1].id = 'income';
                 display.children[2].getElementsByTagName('div')[1].id = 'expense';
-                display.children[3].getElementsByTagName('div')[1].id = 'leftOver';
+                display.children[display.children.length-1].getElementsByTagName('div')[1].id = 'leftOver';
             }
             return display;
         };
