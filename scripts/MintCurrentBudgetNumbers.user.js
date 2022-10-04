@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Mint Current Budget Numbers
 // @namespace    https://github.com/Gibado
-// @version      2022.10.4.3
+// @version      2022.10.4.4
 // @description  Adds another budget summary with the current values rather than expected values
 // @author       Tyler Studanski
 // @match        https://mint.intuit.com/budgets
@@ -41,9 +41,7 @@
 
         self.updateTextColor = function(div, quantity) {
             // Remove existing colors
-            div.classList.remove(self.greenClass);
-            div.classList.remove(self.redClass);
-            div.classList.remove(self.blackClass);
+            div.classList.remove(self.greenClass, self.redClass, self.blackClass);
 
             // Assign correct color
             if (quantity > 0) {
