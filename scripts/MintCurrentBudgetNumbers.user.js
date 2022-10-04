@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Mint Current Budget Numbers
 // @namespace    https://github.com/Gibado
-// @version      2022.10.4.1
+// @version      2022.10.4.3
 // @description  Adds another budget summary with the current values rather than expected values
 // @author       Tyler Studanski
 // @match        https://mint.intuit.com/budgets
@@ -20,6 +20,9 @@
         var self = this;
 
         self.checkInterval = 100; // milliseconds
+        self.greenClass = 'jpsRWg';
+        self.redClass = 'jwiEqi';
+        self.blackClass = 'kWUvkg';
 
         self.updateCurrentBudgetTotals = function() {
             var totals = self.getTotals();
@@ -29,8 +32,28 @@
             self.getDisplayElement();
             document.getElementById('income').textContent = self.numberToMoney(totals.correctIncome);
             document.getElementById('expense').textContent = self.numberToMoney(totals.correctSpending);
-            document.getElementById('leftOver').textContent = self.numberToMoney(totals.leftOver);
+            var leftover = document.getElementById('leftOver');
+            leftover.textContent = self.numberToMoney(totals.leftOver);
+
+            // Update leftover color
+            self.updateTextColor(leftover, totals.leftOver);
         }
+
+        self.updateTextColor = function(div, quantity) {
+            // Remove existing colors
+            div.classList.remove(self.greenClass);
+            div.classList.remove(self.redClass);
+            div.classList.remove(self.blackClass);
+
+            // Assign correct color
+            if (quantity > 0) {
+                div.classList.add(self.greenClass);
+            } else if (quantity < 0) {
+                div.classList.add(self.redClass);
+            } else {
+                div.classList.add(self.blackClass);
+            }
+        };
 
         self.getDisplayElement = function() {
             var display = document.getElementById('currentBudgetSummary');
