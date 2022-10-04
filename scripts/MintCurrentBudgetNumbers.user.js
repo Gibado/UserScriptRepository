@@ -1,12 +1,15 @@
 // ==UserScript==
 // @name         Mint Current Budget Numbers
-// @namespace    http://tampermonkey.net/
-// @version      0.6
+// @namespace    https://github.com/Gibado
+// @version      2022.10.4.0
 // @description  Adds another budget summary with the current values rather than expected values
 // @author       Tyler Studanski
 // @match        https://mint.intuit.com/budgets
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=intuit.com
+// @downloadURL  https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintCurrentBudgetNumbers.user.js
+// @updateURL    https://github.com/Gibado/UserScriptRepository/raw/master/scripts/MintCurrentBudgetNumbers.user.js
 // @grant        none
+// @copyright	 2022
 // ==/UserScript==
 
 (function() {
