@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name		Southwest Auto Checkin
 // @namespace	https://github.com/Gibado
-// @version		2025.07.30.0
+// @version		2025.12.17.0
 // @description	Automatically clicks on the Check in button for checking in for a flight
 // @match		https://www.southwest.com/air/check-in/*
 // @downloadURL https://github.com/Gibado/UserScriptRepository/raw/master/scripts/SouthwestAutoCheckin.user.js
@@ -34,7 +34,8 @@
             if (second) {
                 target.setSeconds(second);
             } else {
-                target.setSeconds(1);
+                // Delaying the time slightly because the SW servers can't handle the speed lol
+                target.setSeconds(2);
             }
             target.setMilliseconds(0);
 
@@ -46,8 +47,8 @@
             const delay = target.getTime() - now.getTime();
 
             console.log(`Scheduling check in to run in ${Math.round(delay / 1000)} seconds.`);
-
-            setTimeout(checkin, delay);
+            var self = this;
+            setTimeout(this.checkin, delay);
         }
 
         // Fucntion to actually click the login button
@@ -57,7 +58,7 @@
         }
         help() {
             console.log('Call this to start the scheduling');
-            console.log('document.autoCheckinModel({hour},[{minute}],[{second}])');
+            console.log('document.autoCheckinModel.scheduleCheckInAt({hour 0-23},[{minute 0-59}],[{second 0-59}])');
         }
     }
     document.autoCheckinModel = new AutoCheckin();
